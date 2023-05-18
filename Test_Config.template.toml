@@ -1,0 +1,11 @@
+token = ""
+ownerIds = [1234]
+prefixes = []
+testGuildIds = [1234]
+
+[dbConfig]
+serverName = ""
+portNumber = 0
+user = ""
+password = ""
+dbName = ""
