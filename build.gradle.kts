@@ -27,13 +27,21 @@ application {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.apply {
-        jvmTarget = "18"
-        freeCompilerArgs += "-Xcontext-receivers"
+        jvmTarget = "19"
+        freeCompilerArgs += listOf(
+            "-Xcontext-receivers",
+            "-java-parameters",
+            "-Xjvm-default=all",
+            "-opt-in=kotlin.RequiresOptIn",
+            "-opt-in=kotlin.ExperimentalStdlibApi",
+            "-Xskip-prerelease-check",
+            "-Xlambdas=indy"
+        )
     }
 }
 
 tasks.withType<JavaCompile> {
-    sourceCompatibility = "18"
-    targetCompatibility = "18"
+    sourceCompatibility = "19"
+    targetCompatibility = "19"
     options.compilerArgs.add("--enable-preview") // Loom
 }

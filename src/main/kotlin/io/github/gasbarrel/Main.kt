@@ -1,6 +1,6 @@
 @file:JvmName("Main")
 package io.github.gasbarrel
 
-fun main(args: Array<String>) {
+fun main() {
     println("Gas, Gas, Gas!")
 }
