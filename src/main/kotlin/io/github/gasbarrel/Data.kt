@@ -15,8 +15,8 @@ object Data {
     private val configFolder: Path = botFolder.resolve("config")
 
     //Fine if not used, might just be using the test config
-    private val configPath: Path = configFolder.resolve("Config.toml")
-    private val testConfigPath: Path = Path("Test_Config.toml")
+    private val configPath: Path = configFolder.resolve("config.toml")
+    private val testConfigPath: Path = Path("config.test.toml")
 
     val logbackConfigPath: Path = configFolder.resolve("logback.xml")
 
