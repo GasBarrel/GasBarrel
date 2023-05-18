@@ -38,6 +38,10 @@ dependencies {
     // Configs
     implementation("com.akuleshov7:ktoml-core:0.5.0")
 
+    //SQL
+    implementation("org.postgresql:postgresql:42.6.0")
+    implementation("com.zaxxer:HikariCP:5.0.1")
+
     testImplementation(kotlin("test"))
 }
 
