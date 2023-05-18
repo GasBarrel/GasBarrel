@@ -11,7 +11,7 @@ import kotlin.io.path.notExists
 // If not then fallback to the config path, which must be validated
 // Other configs such as logback are set in the bot folder
 object Data {
-    private val botFolder: Path = validatedPath("Bot folder", Path(System.getProperty("user.home"), "Bots", "GasBarrel"))
+    private val botFolder: Path = Path(System.getProperty("user.home"), "Bots", "GasBarrel").validate("Bot folder")
     private val configFolder: Path = botFolder.resolve("config")
 
     //Fine if not used, might just be using the test config
@@ -32,9 +32,8 @@ object Data {
         else -> throw FileNotFoundException("Bot config at ${configPath.absolutePathString()} does not exist and test config at ${testConfigPath.absolutePathString()} was not found either.")
     }
 
-    private fun validatedPath(desc: String, p: Path): Path {
-        if (p.notExists())
-            throw FileNotFoundException("$desc at ${p.absolutePathString()} does not exist.")
-        return p
+    private fun Path.validate(desc: String) = this.also {
+        if (this.notExists())
+            throw FileNotFoundException("$desc at ${this.absolutePathString()} does not exist.")
     }
 }
