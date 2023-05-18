@@ -35,7 +35,6 @@ tasks.withType<KotlinCompile> {
             "-opt-in=kotlin.RequiresOptIn",
             "-opt-in=kotlin.ExperimentalStdlibApi",
             "-Xskip-prerelease-check",
-            "-Xlambdas=indy"
         )
     }
 }
