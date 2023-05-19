@@ -42,17 +42,17 @@ fun main(args: Array<out String>) {
                 disableAutocompleteCache = true
             }
 
-            addOwners(*config.ownerIds.toLongArray())
+            addOwners(*Config.instance.ownerIds.toLongArray())
 
             addSearchPath("io.github.gasbarrel")
 
             textCommands {
-                usePingAsPrefix = "@ping" in config.prefixes
-                prefixes += config.prefixes
+                usePingAsPrefix = "@ping" in Config.instance.prefixes
+                prefixes += Config.instance.prefixes
             }
 
             applicationCommands {
-                testGuildIds += config.testGuildIds
+                testGuildIds += Config.instance.testGuildIds
             }
 
             components {

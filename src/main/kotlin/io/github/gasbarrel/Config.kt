@@ -10,12 +10,6 @@ import mu.KotlinLogging
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 
-val config: Config by lazy {
-    Config.logger.info("Loading configuration at ${Environment.configFilePath}")
-
-    return@lazy Toml.decodeFromString(Environment.configFilePath.readText())
-}
-
 @Serializable
 data class DatabaseConfig(
     @SerialName("server-name")
@@ -41,11 +35,17 @@ data class Config(
     val database: DatabaseConfig
 ) {
     companion object {
-        internal val logger = KotlinLogging.logger {}
+        private val logger = KotlinLogging.logger {}
 
         val folder = Path(".", if (Environment.isDev) "dev-config" else "config")
 
+        val instance: Config by lazy {
+            logger.info("Loading configuration at ${Environment.configFilePath}")
+
+            return@lazy Toml.decodeFromString(Environment.configFilePath.readText())
+        }
+
         @InstanceSupplier
-        fun supply(): Config = config
+        fun supply(): Config = instance
     }
 }
