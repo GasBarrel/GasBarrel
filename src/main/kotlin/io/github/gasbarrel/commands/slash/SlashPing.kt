@@ -8,7 +8,7 @@ import com.freya02.botcommands.api.commands.application.slash.GlobalSlashEvent
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.messages.reply_
 
-@CommandMarker //Shut up IJ
+@CommandMarker // Shut up IJ
 class SlashPing {
     @CommandMarker
     suspend fun onSlashPing(event: GlobalSlashEvent) {
@@ -21,7 +21,7 @@ class SlashPing {
     @AppDeclaration
     fun declare(manager: GlobalApplicationCommandManager) {
         manager.slashCommand("ping", scope = CommandScope.GLOBAL) {
-            description = "Pong !"
+            description = "Pong!"
 
             function = ::onSlashPing
         }

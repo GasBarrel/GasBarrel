@@ -23,9 +23,9 @@ fun main(args: Array<out String>) {
 
         if (Data.logbackConfigPath.exists()) {
             System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, Data.logbackConfigPath.absolutePathString())
-            logger.info( "Loading production logback config")
+            logger.info("Loading production logback config")
         } else {
-            logger.info( "Loading test logback config")
+            logger.info("Loading test logback config")
         }
 
         //stacktrace-decoroutinator seems to have issues when reloading with hotswap agent
