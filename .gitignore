@@ -40,6 +40,5 @@ bin/
 .DS_Store
 
 ### Configuration & Data ###
-config.toml
 config.dev.toml
 dev-data
