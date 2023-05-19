@@ -3,6 +3,7 @@ package io.github.gasbarrel
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
+import kotlin.io.path.extension
 import kotlin.io.path.toPath
 
 object Environment {
