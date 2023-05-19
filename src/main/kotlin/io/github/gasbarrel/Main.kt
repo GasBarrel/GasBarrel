@@ -21,8 +21,8 @@ fun main(args: Array<out String>) {
     try {
         Data.init()
 
-        if (Data.logbackConfigPath.exists()) {
-            System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, Data.logbackConfigPath.absolutePathString())
+        if (Data.prodLogbackConfigPath.exists()) {
+            System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, Data.prodLogbackConfigPath.absolutePathString())
             logger.info("Loading production logback config")
         } else {
             logger.info("Loading test logback config")

@@ -38,4 +38,5 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-config.test.toml
+config.dev.toml
+dev-data
