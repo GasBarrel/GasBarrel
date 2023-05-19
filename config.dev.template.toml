@@ -14,7 +14,7 @@ testGuildIds = [
 
 [database]
 serverName = "mydbservername"
-name = "mydbname"
 port = 5432
+name = "mydbname"
 user = "mydbuser"
 password = "mydbpassword"
