@@ -1,7 +1,8 @@
 @file:JvmName("Main")
+
 package io.github.gasbarrel
 
-import ch.qos.logback.classic.ClassicConstants
+import ch.qos.logback.classic.ClassicConstants as LogbackConstants
 import com.freya02.botcommands.api.core.BBuilder
 import dev.minn.jda.ktx.events.CoroutineEventManager
 import dev.reformator.stacktracedecoroutinator.runtime.DecoroutinatorRuntime
@@ -11,7 +12,6 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.events.session.ShutdownEvent
 import java.lang.management.ManagementFactory
 import kotlin.io.path.absolutePathString
-import kotlin.io.path.exists
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.minutes
 
@@ -19,22 +19,18 @@ private val logger by lazy { KotlinLogging.logger {} } // Must not load before s
 
 fun main(args: Array<out String>) {
     try {
-        Data.init()
+        System.setProperty(LogbackConstants.CONFIG_FILE_PROPERTY, Environment.logbackConfigPath.absolutePathString())
+        logger.info("Loading logback configuration at ${Environment.logbackConfigPath.absolutePathString()}")
 
-        if (Data.prodLogbackConfigPath.exists()) {
-            System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, Data.prodLogbackConfigPath.absolutePathString())
-            logger.info("Loading production logback config")
-        } else {
-            logger.info("Loading test logback config")
-        }
+        // stacktrace-decoroutinator seems to have issues when reloading with hotswap agent
+        when {
+            "-XX:HotswapAgent=fatjar" in ManagementFactory.getRuntimeMXBean().inputArguments ->
+                logger.info("Skipping stacktrace-decoroutinator as HotswapAgent is active")
 
-        //stacktrace-decoroutinator seems to have issues when reloading with hotswap agent
-        if ("-XX:HotswapAgent=fatjar" in ManagementFactory.getRuntimeMXBean().inputArguments) {
-            logger.info("Skipping stacktrace-decoroutinator as HotswapAgent is active")
-        } else if ("--no-decoroutinator" in args) {
-            logger.info("Skipping stacktrace-decoroutinator as --no-decoroutinator is specified")
-        } else {
-            DecoroutinatorRuntime.load()
+            "--no-decoroutinator" in args ->
+                logger.info("Skipping stacktrace-decoroutinator as --no-decoroutinator is specified")
+
+            else -> DecoroutinatorRuntime.load()
         }
 
         val scope = namedDefaultScope("GasBarrel Coroutine", 4)
@@ -43,9 +39,10 @@ fun main(args: Array<out String>) {
             scope.cancel()
         }
 
-        val config = Config.config
+        val config = Config.instance
+
         BBuilder.newBuilder(manager) {
-            if (Data.isDevEnvironment) {
+            if (Environment.isDev) {
                 disableExceptionsInDMs = true
                 disableAutocompleteCache = true
             }
@@ -55,8 +52,8 @@ fun main(args: Array<out String>) {
             addSearchPath("io.github.gasbarrel")
 
             textCommands {
-                usePingAsPrefix = config.prefixes.isEmpty()
-                prefixes += config.prefixes
+                usePingAsPrefix = "<ping>" in config.prefixes
+                prefixes += config.prefixes - "<ping>"
             }
 
             applicationCommands {
@@ -71,6 +68,6 @@ fun main(args: Array<out String>) {
         logger.info("Loaded commands")
     } catch (e: Exception) {
         logger.error("Unable to start the bot", e)
-        exitProcess(-1)
+        exitProcess(1)
     }
 }

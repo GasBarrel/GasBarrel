@@ -1,3 +1,4 @@
+### Gradle ###
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -38,5 +39,6 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-config.dev.toml
-dev-data
+### Configuration & Data ###
+dev-config/
+dev-data/

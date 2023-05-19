@@ -1,12 +1,12 @@
 -- Don't forget to run CreateDatabase.sql from BotCommands
 
-drop table if exists gasbarrel_version;
+DROP TABLE IF EXISTS gasbarrel_version;
 
-create table gasbarrel_version
+CREATE TABLE gasbarrel_version
 (
-    one_row bool primary key default true check (one_row),
-    version text not null
+    one_row BOOL PRIMARY KEY DEFAULT true CHECK (one_row),
+    version TEXT NOT null
 );
 
-insert into gasbarrel_version
-values (true, '1.0'); -- Change in DatabaseSource.kt too
+INSERT INTO gasbarrel_version
+VALUES (true, '1.0'); -- Change in DatabaseSource.kt too
