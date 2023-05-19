@@ -42,7 +42,6 @@ class DatabaseSource(config: Config) : ConnectionSupplier {
                     if (!rs.next()) throw IllegalStateException("Found no version in database, please refer to the README to set up the database")
 
                     val databaseVersion = rs.getString("version")
-
                     if (databaseVersion != version) {
                         val sqlFolderPath = Path("sql")
 
