@@ -1,3 +1,4 @@
+### Gradle ###
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -37,3 +38,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Configuration & Data ###
+dev-config/
+dev-data/

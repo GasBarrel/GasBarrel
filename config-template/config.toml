@@ -1,0 +1,21 @@
+token = "<BOT-TOKEN>"
+owner_ids = [
+    12345678901234567,
+    12345678901234567,
+]
+prefixes = [
+    "<ping>", # This allows ping as prefix.
+    "!",
+    "?",
+]
+test_guild_ids = [
+    12345678901234567,
+    12345678901234567,
+]
+
+[database]
+server_name = "mydbservername"
+port = 5432
+name = "mydbname"
+user = "mydbuser"
+password = "mydbpassword"

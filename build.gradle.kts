@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.8.21"
+    kotlin("plugin.serialization") version "1.8.21"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     application
 }
@@ -30,6 +31,16 @@ dependencies {
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.21")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+
+    // Coroutine debugging
+    implementation("dev.reformator.stacktracedecoroutinator:stacktrace-decoroutinator-jvm:2.3.6")
+
+    // Configs
+    implementation("com.akuleshov7:ktoml-core:0.5.0")
+
+    // SQL
+    implementation("org.postgresql:postgresql:42.6.0")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
     testImplementation(kotlin("test"))
 }
