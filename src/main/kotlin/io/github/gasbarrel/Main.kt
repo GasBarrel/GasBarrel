@@ -47,8 +47,8 @@ fun main(args: Array<out String>) {
             addSearchPath("io.github.gasbarrel")
 
             textCommands {
-                usePingAsPrefix = "@ping" in Config.instance.prefixes
-                prefixes += Config.instance.prefixes
+                usePingAsPrefix = "<ping>" in Config.instance.prefixes
+                prefixes += Config.instance.prefixes.filter { it != "<ping>" }
             }
 
             applicationCommands {

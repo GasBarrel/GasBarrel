@@ -4,7 +4,7 @@ owner-ids = [
     12345678901234567,
 ]
 prefixes = [
-    "@ping", # This allows ping as prefix.
+    "<ping>", # This allows ping as prefix.
     "!",
     "?",
 ]
