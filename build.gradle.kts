@@ -32,13 +32,13 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.21")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
-    //Coroutine debugging
+    // Coroutine debugging
     implementation("dev.reformator.stacktracedecoroutinator:stacktrace-decoroutinator-jvm:2.3.6")
 
     // Configs
     implementation("com.akuleshov7:ktoml-core:0.5.0")
 
-    //SQL
+    // SQL
     implementation("org.postgresql:postgresql:42.6.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
