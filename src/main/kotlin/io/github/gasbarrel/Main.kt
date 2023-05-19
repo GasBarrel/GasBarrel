@@ -1,4 +1,5 @@
 @file:JvmName("Main")
+
 package io.github.gasbarrel
 
 import ch.qos.logback.classic.ClassicConstants as LogbackConstants

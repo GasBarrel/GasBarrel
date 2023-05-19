@@ -7,6 +7,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
+import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 
@@ -37,7 +38,7 @@ data class Config(
     companion object {
         private val logger = KotlinLogging.logger {}
 
-        val folder = Path(".", if (Environment.isDev) "dev-config" else "config")
+        val folder: Path = Path(".", if (Environment.isDev) "dev-config" else "config")
 
         val instance: Config by lazy {
             logger.info("Loading configuration at ${Environment.configFilePath}")

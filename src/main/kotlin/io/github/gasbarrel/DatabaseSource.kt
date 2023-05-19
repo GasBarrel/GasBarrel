@@ -20,20 +20,16 @@ private val databaseVersionRegex = Regex("""(\d+)\.(\d+)""")
 class DatabaseSource(config: Config) : ConnectionSupplier {
     private val version = "1.0" // Same version as in CreateDatabase.sql
 
-    private val source: HikariDataSource
+    private val source = HikariDataSource(HikariConfig().apply {
+        jdbcUrl = config.database.url
+        username = config.database.user
+        password = config.database.password
+
+        maximumPoolSize = 2
+        leakDetectionThreshold = 10.seconds.inWholeMilliseconds
+    })
 
     init {
-        val databaseConfig = config.database
-
-        source = HikariDataSource(HikariConfig().apply {
-            jdbcUrl = databaseConfig.url
-            username = databaseConfig.user
-            password = databaseConfig.password
-
-            maximumPoolSize = 2
-            leakDetectionThreshold = 10.seconds.inWholeMilliseconds
-        })
-
         checkVersion()
 
         logger.info("Created database source")
@@ -67,8 +63,10 @@ class DatabaseSource(config: Config) : ConnectionSupplier {
         val hintFiles = sqlFolderPath.walk()
             .filter { it.extension == "sql" }
             .filter {
-                val (_, major, minor) = migrationNameRegex.matchEntire(it.name)?.groupValues ?: return@filter false
-                val (_, dbMajor, dbMinor) = databaseVersionRegex.matchEntire(databaseVersion)?.groupValues ?: return@filter false
+                val (_, major, minor) = migrationNameRegex.matchEntire(it.name)?.groupValues
+                    ?: return@filter false
+                val (_, dbMajor, dbMinor) = databaseVersionRegex.matchEntire(databaseVersion)?.groupValues
+                    ?: return@filter false
 
                 // Keep if db version is lower than file
                 if (dbMajor.toInt() < major.toInt()) return@filter true
@@ -82,7 +80,7 @@ class DatabaseSource(config: Config) : ConnectionSupplier {
         return "\nHint: You should run the following migration scripts: $hintFiles"
     }
 
-    override fun getMaxConnections() = source.maximumPoolSize
+    override fun getMaxConnections(): Int = source.maximumPoolSize
 
     override fun getConnection(): Connection = source.connection
 
