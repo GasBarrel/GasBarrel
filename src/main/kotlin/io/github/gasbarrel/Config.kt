@@ -38,9 +38,7 @@ data class Config(
     companion object {
         private val logger = KotlinLogging.logger {}
 
-        val folder: Path =
-            Environment.folder.resolve(if (Environment.isDev) "dev-config" else "config")
-        val configFilePath: Path = folder.resolve("config.toml")
+        private val configFilePath: Path = Environment.configFolder.resolve("config.toml")
 
         val instance: Config by lazy {
             logger.info("Loading configuration at ${configFilePath.absolutePathString()}")
