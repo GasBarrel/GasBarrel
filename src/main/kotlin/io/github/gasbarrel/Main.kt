@@ -10,9 +10,7 @@ import kotlinx.coroutines.cancel
 import mu.KotlinLogging
 import net.dv8tion.jda.api.events.session.ShutdownEvent
 import java.lang.management.ManagementFactory
-import javax.xml.crypto.Data
 import kotlin.io.path.absolutePathString
-import kotlin.io.path.exists
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.minutes
 
@@ -22,8 +20,8 @@ fun main(args: Array<out String>) {
     try {
         val logbackConfigPath = Config.folder.resolve("logback.xml")
 
-        logger.info("Loading logback configuration at $logbackConfigPath")
         System.setProperty(LogbackConstants.CONFIG_FILE_PROPERTY, logbackConfigPath.absolutePathString())
+        logger.info("Loading logback configuration at $logbackConfigPath")
 
         // stacktrace-decoroutinator seems to have issues when reloading with hotswap agent
         if ("-XX:HotswapAgent=fatjar" in ManagementFactory.getRuntimeMXBean().inputArguments) {
