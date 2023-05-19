@@ -8,7 +8,7 @@ import kotlin.io.path.toPath
 
 object Environment {
     /**
-     * The mode is determined by checking whether if the
+     * The mode is determined by checking if the
      * `dev-config` directory exists in the current directory.
      */
     val isDev: Boolean = Path("dev-config").exists()
