@@ -40,5 +40,7 @@ bin/
 .DS_Store
 
 ### Configuration & Data ###
-config.dev.toml
-dev-data
+dev-config/
+config/
+dev-data/
+data/
