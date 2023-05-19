@@ -9,6 +9,7 @@ import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
 import kotlin.io.path.readText
 
 @Serializable
@@ -39,11 +40,12 @@ data class Config(
         private val logger = KotlinLogging.logger {}
 
         val folder: Path = Path(if (Environment.isDev) "dev-config" else "config")
+        val configFilePath = folder.resolve("config.toml")
 
         val instance: Config by lazy {
-            logger.info("Loading configuration at ${Environment.configFilePath}")
+            logger.info("Loading configuration at ${configFilePath.absolutePathString()}")
 
-            Toml.decodeFromString(Environment.configFilePath.readText())
+            Toml.decodeFromString(configFilePath.readText())
         }
 
         @InstanceSupplier

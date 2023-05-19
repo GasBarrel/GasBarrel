@@ -41,6 +41,4 @@ bin/
 
 ### Configuration & Data ###
 dev-config/
-config/
 dev-data/
-data/

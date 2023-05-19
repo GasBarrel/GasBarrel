@@ -12,13 +12,13 @@ import java.sql.Connection
 import kotlin.io.path.*
 import kotlin.time.Duration.Companion.seconds
 
-private val migrationNameRegex = Regex("""v(\d+)\.(\d+)__.+\.sql""")
-private val databaseVersionRegex = Regex("""(\d+)\.(\d+)""")
-
 @BService(ServiceStart.PRE_LOAD)
 @ServiceType(type = ConnectionSupplier::class)
 class DatabaseSource(config: Config) : ConnectionSupplier {
     private val version = "1.0" // Same version as in CreateDatabase.sql
+
+    private val migrationNameRegex = Regex("""v(\d+)\.(\d+)__.+\.sql""")
+    private val databaseVersionRegex = Regex("""(\d+)\.(\d+)""")
 
     private val source = HikariDataSource(HikariConfig().apply {
         jdbcUrl = config.database.url
@@ -46,10 +46,14 @@ class DatabaseSource(config: Config) : ConnectionSupplier {
                     if (databaseVersion != version) {
                         val sqlFolderPath = Path("sql")
 
-                        val suffix = if (sqlFolderPath.exists())
-                            buildHintSuffix(sqlFolderPath, databaseVersion)
-                        else
-                            ""
+                        val suffix = when {
+                            sqlFolderPath.exists() -> buildHintSuffix(
+                                sqlFolderPath,
+                                databaseVersion
+                            )
+
+                            else -> ""
+                        }
 
                         throw IllegalStateException("Database version mismatch, expected $version, got $databaseVersion $suffix")
                     }

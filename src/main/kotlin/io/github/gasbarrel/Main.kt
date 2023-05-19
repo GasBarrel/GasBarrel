@@ -20,7 +20,7 @@ private val logger by lazy { KotlinLogging.logger {} } // Must not load before s
 fun main(args: Array<out String>) {
     try {
         System.setProperty(LogbackConstants.CONFIG_FILE_PROPERTY, Environment.logbackConfigPath.absolutePathString())
-        logger.info("Loading logback configuration at ${Environment.logbackConfigPath}")
+        logger.info("Loading logback configuration at ${Environment.logbackConfigPath.absolutePathString()}")
 
         // stacktrace-decoroutinator seems to have issues when reloading with hotswap agent
         if ("-XX:HotswapAgent=fatjar" in ManagementFactory.getRuntimeMXBean().inputArguments) {
@@ -37,23 +37,25 @@ fun main(args: Array<out String>) {
             scope.cancel()
         }
 
+        val config = Config.instance
+
         BBuilder.newBuilder(manager) {
             if (Environment.isDev) {
                 disableExceptionsInDMs = true
                 disableAutocompleteCache = true
             }
 
-            addOwners(*Config.instance.ownerIds.toLongArray())
+            addOwners(*config.ownerIds.toLongArray())
 
             addSearchPath("io.github.gasbarrel")
 
             textCommands {
-                usePingAsPrefix = "<ping>" in Config.instance.prefixes
-                prefixes += Config.instance.prefixes.filter { it != "<ping>" }
+                usePingAsPrefix = "<ping>" in config.prefixes
+                prefixes += config.prefixes - "<ping>"
             }
 
             applicationCommands {
-                testGuildIds += Config.instance.testGuildIds
+                testGuildIds += config.testGuildIds
             }
 
             components {
