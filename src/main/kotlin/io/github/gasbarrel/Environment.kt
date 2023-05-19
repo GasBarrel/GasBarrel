@@ -16,8 +16,15 @@ object Environment {
      * The folder where the data and configuration directories reside.
      */
     val folder: Path = when {
-        isDev -> javaClass.protectionDomain.codeSource.location.toURI().toPath()
-        else -> Path(".")
+        isDev -> Path(".")
+        else -> {
+            val jarPath = javaClass.protectionDomain.codeSource.location.toURI().toPath()
+            if (jarPath.extension != "jar") {
+                throw IllegalStateException("Production environment detected (no 'dev-config' folder), but file at $jarPath isn't a JAR")
+            }
+
+            jarPath.parent
+        }
     }
 
     val logbackConfigPath: Path = Config.folder.resolve("logback.xml")
