@@ -18,10 +18,8 @@ private val logger by lazy { KotlinLogging.logger {} } // Must not load before s
 
 fun main(args: Array<out String>) {
     try {
-        val logbackConfigPath = Config.folder.resolve("logback.xml")
-
-        System.setProperty(LogbackConstants.CONFIG_FILE_PROPERTY, logbackConfigPath.absolutePathString())
-        logger.info("Loading logback configuration at $logbackConfigPath")
+        System.setProperty(LogbackConstants.CONFIG_FILE_PROPERTY, Environment.logbackConfigPath.absolutePathString())
+        logger.info("Loading logback configuration at ${Environment.logbackConfigPath}")
 
         // stacktrace-decoroutinator seems to have issues when reloading with hotswap agent
         if ("-XX:HotswapAgent=fatjar" in ManagementFactory.getRuntimeMXBean().inputArguments) {
@@ -39,7 +37,7 @@ fun main(args: Array<out String>) {
         }
 
         BBuilder.newBuilder(manager) {
-            if (Config.isDevEnvironment) {
+            if (Environment.isDev) {
                 disableExceptionsInDMs = true
                 disableAutocompleteCache = true
             }

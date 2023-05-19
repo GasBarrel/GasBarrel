@@ -8,15 +8,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
 import kotlin.io.path.Path
-import kotlin.io.path.exists
 import kotlin.io.path.readText
 
 val config: Config by lazy {
-    val configPath = Config.folder.resolve("config.toml")
+    Config.logger.info("Loading configuration at ${Environment.configFilePath}")
 
-    Config.logger.info("Loading configuration at $configPath")
-
-    return@lazy Toml.decodeFromString(configPath.readText())
+    return@lazy Toml.decodeFromString(Environment.configFilePath.readText())
 }
 
 @Serializable
@@ -46,13 +43,7 @@ data class Config(
     companion object {
         internal val logger = KotlinLogging.logger {}
 
-        /**
-         * The mode is determined by checking whether if the
-         * `dev-config` directory exists in the current directory.
-         */
-        val isDevEnvironment = Path("dev-config").exists()
-
-        val folder = Path(".", if (isDevEnvironment) "dev-config" else "config")
+        val folder = Path(".", if (Environment.isDev) "dev-config" else "config")
 
         @InstanceSupplier
         fun supply(): Config = config
