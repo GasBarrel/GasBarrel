@@ -23,12 +23,14 @@ fun main(args: Array<out String>) {
         logger.info("Loading logback configuration at ${Environment.logbackConfigPath.absolutePathString()}")
 
         // stacktrace-decoroutinator seems to have issues when reloading with hotswap agent
-        if ("-XX:HotswapAgent=fatjar" in ManagementFactory.getRuntimeMXBean().inputArguments) {
-            logger.info("Skipping stacktrace-decoroutinator as HotswapAgent is active")
-        } else if ("--no-decoroutinator" in args) {
-            logger.info("Skipping stacktrace-decoroutinator as --no-decoroutinator is specified")
-        } else {
-            DecoroutinatorRuntime.load()
+        when {
+            "-XX:HotswapAgent=fatjar" in ManagementFactory.getRuntimeMXBean().inputArguments ->
+                logger.info("Skipping stacktrace-decoroutinator as HotswapAgent is active")
+
+            "--no-decoroutinator" in args ->
+                logger.info("Skipping stacktrace-decoroutinator as --no-decoroutinator is specified")
+
+            else -> DecoroutinatorRuntime.load()
         }
 
         val scope = namedDefaultScope("GasBarrel Coroutine", 4)
