@@ -9,30 +9,31 @@ import mu.KotlinLogging
 import kotlin.io.path.readText
 
 @Serializable
-data class DBConfig(
+data class DatabaseConfig(
     val serverName: String,
-    val portNumber: Int,
+    val port: Int,
+    val name: String,
     val user: String,
-    val password: String,
-    val dbName: String
+    val password: String
 ) {
-    val dbURL: String
-        get() = "jdbc:postgresql://$serverName:$portNumber/$dbName"
+    val url: String = "jdbc:postgresql://$serverName:$port/$name"
 }
 
 @BService
 @Serializable
 data class Config(
     val token: String,
-    val ownerIds: List<Long>,
     val prefixes: List<String>,
+    val ownerIds: List<Long>,
     val testGuildIds: List<Long>,
-    val dbConfig: DBConfig
+    val database: DatabaseConfig
 ) {
     companion object {
-        private val logger = KotlinLogging.logger { }
+        private val logger = KotlinLogging.logger {}
+
         val config: Config by lazy {
             val configPath = Data.getEffectiveConfigPath()
+
             if (Data.isDevEnvironment) {
                 logger.info("Loading test config")
             }

@@ -1,11 +1,20 @@
-token = ""
-ownerIds = [1234]
-prefixes = []
-testGuildIds = [1234]
+token = "XXXXXXXXXXXXXXXXXXXXXXXX.XXXXXX.XXXXXX_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+ownerIds = [
+    00000000000000000,
+    00000000000000000,
+]
+prefixes = [
+    "!",
+    "?",
+]
+testGuildIds = [
+    00000000000000000,
+    00000000000000000,
+]
 
-[dbConfig]
-serverName = ""
-portNumber = 0
-user = ""
-password = ""
-dbName = ""
+[database]
+serverName = "mydbservername"
+name = "mydbname"
+port = 5432
+user = "mydbuser"
+password = "mydbpassword"
