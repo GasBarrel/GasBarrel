@@ -42,7 +42,7 @@ data class Config(
         val instance: Config by lazy {
             logger.info("Loading configuration at ${Environment.configFilePath}")
 
-            return@lazy Toml.decodeFromString(Environment.configFilePath.readText())
+            Toml.decodeFromString(Environment.configFilePath.readText())
         }
 
         @InstanceSupplier
