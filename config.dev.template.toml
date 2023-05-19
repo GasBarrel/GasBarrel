@@ -1,19 +1,19 @@
-token = "XXXXXXXXXXXXXXXXXXXXXXXX.XXXXXX.XXXXXX_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-ownerIds = [
-    00000000000000000,
-    00000000000000000,
+token = "<BOT-TOKEN>"
+owner-ids = [
+    12345678901234567,
+    12345678901234567,
 ]
 prefixes = [
     "!",
     "?",
 ]
-testGuildIds = [
-    00000000000000000,
-    00000000000000000,
+test-guild-ids = [
+    12345678901234567,
+    12345678901234567,
 ]
 
 [database]
-serverName = "mydbservername"
+server-name = "mydbservername"
 port = 5432
 name = "mydbname"
 user = "mydbuser"
