@@ -8,13 +8,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import mu.KotlinLogging
 import java.nio.file.Path
-import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.readText
 
 @Serializable
 data class DatabaseConfig(
-    @SerialName("server-name")
+    @SerialName("server_name")
     val serverName: String,
     val port: Int,
     val name: String,
@@ -30,9 +29,9 @@ data class DatabaseConfig(
 data class Config(
     val token: String,
     val prefixes: List<String>,
-    @SerialName("owner-ids")
+    @SerialName("owner_ids")
     val ownerIds: List<Long>,
-    @SerialName("test-guild-ids")
+    @SerialName("test_guild_ids")
     val testGuildIds: List<Long>,
     val database: DatabaseConfig
 ) {
