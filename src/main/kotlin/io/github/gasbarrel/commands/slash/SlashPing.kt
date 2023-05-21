@@ -20,10 +20,8 @@ class SlashPing {
 
     @AppDeclaration
     fun declare(manager: GlobalApplicationCommandManager) {
-        manager.slashCommand("ping", scope = CommandScope.GLOBAL) {
+        manager.slashCommand("ping", scope = CommandScope.GLOBAL, ::onSlashPing) {
             description = "Pong!"
-
-            function = ::onSlashPing
         }
     }
 }
