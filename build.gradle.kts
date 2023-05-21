@@ -21,7 +21,7 @@ dependencies {
     implementation("io.github.minndevelopment:jda-ktx:9fc90f616b")
 
     // Application commands
-    implementation("io.github.freya022:BotCommands:4fa3e153ef")
+    implementation("io.github.freya022:BotCommands:5a2adab5e9")
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.7")
@@ -41,6 +41,7 @@ dependencies {
     // SQL
     implementation("org.postgresql:postgresql:42.6.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("org.flywaydb:flyway-core:9.18.0")
 
     testImplementation(kotlin("test"))
 }
