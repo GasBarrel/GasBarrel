@@ -4,8 +4,8 @@ DROP TABLE IF EXISTS gasbarrel_version;
 
 CREATE TABLE gasbarrel_version
 (
-    one_row BOOL PRIMARY KEY DEFAULT true CHECK (one_row),
-    version TEXT NOT null
+    one_row BOOL PRIMARY KEY DEFAULT TRUE CHECK (one_row),
+    version TEXT NOT NULL
 );
 
 INSERT INTO gasbarrel_version
