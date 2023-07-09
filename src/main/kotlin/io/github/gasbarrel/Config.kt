@@ -1,8 +1,7 @@
 package io.github.gasbarrel
 
 import com.akuleshov7.ktoml.Toml
-import com.freya02.botcommands.api.core.annotations.BService
-import com.freya02.botcommands.api.core.suppliers.annotations.InstanceSupplier
+import com.freya02.botcommands.api.core.service.annotations.BService
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -24,7 +23,6 @@ data class DatabaseConfig(
         get() = "jdbc:postgresql://$serverName:$port/$name"
 }
 
-@BService
 @Serializable
 data class Config(
     val token: String,
@@ -40,13 +38,11 @@ data class Config(
 
         private val configFilePath: Path = Environment.configFolder.resolve("config.toml")
 
+        @get:BService
         val instance: Config by lazy {
             logger.info("Loading configuration at ${configFilePath.absolutePathString()}")
 
             Toml.decodeFromString(configFilePath.readText())
         }
-
-        @InstanceSupplier
-        fun supply(): Config = instance
     }
 }

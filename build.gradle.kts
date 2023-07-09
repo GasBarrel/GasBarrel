@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.21"
-    kotlin("plugin.serialization") version "1.8.21"
+    kotlin("jvm") version "1.9.0"
+    kotlin("plugin.serialization") version "1.9.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     application
 }
@@ -17,11 +17,11 @@ repositories {
 
 dependencies {
     // JDA
-    implementation("net.dv8tion:JDA:5.0.0-beta.9")
+    implementation("net.dv8tion:JDA:5.0.0-beta.11")
     implementation("io.github.minndevelopment:jda-ktx:9fc90f616b")
 
     // Application commands
-    implementation("io.github.freya022:BotCommands:c5f13589a1")
+    implementation("io.github.freya022:BotCommands:3.0.0-alpha.2")
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.7")
@@ -29,8 +29,8 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
 
     // Kotlin
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.21")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
 
     // Coroutine debugging
     implementation("dev.reformator.stacktracedecoroutinator:stacktrace-decoroutinator-jvm:2.3.6")
@@ -56,7 +56,7 @@ application {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.apply {
-        jvmTarget = "19"
+        jvmTarget = "20"
         freeCompilerArgs += listOf(
             "-Xcontext-receivers",
             "-java-parameters",
@@ -69,7 +69,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<JavaCompile> {
-    sourceCompatibility = "19"
-    targetCompatibility = "19"
+    sourceCompatibility = "20"
+    targetCompatibility = "20"
     options.compilerArgs.add("--enable-preview") // Loom
 }
