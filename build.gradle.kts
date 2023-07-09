@@ -17,11 +17,11 @@ repositories {
 
 dependencies {
     // JDA
-    implementation("net.dv8tion:JDA:5.0.0-beta.9")
+    implementation("net.dv8tion:JDA:5.0.0-beta.11")
     implementation("io.github.minndevelopment:jda-ktx:9fc90f616b")
 
     // Application commands
-    implementation("io.github.freya022:BotCommands:c5f13589a1")
+    implementation("io.github.freya022:BotCommands:3.0.0-alpha.2")
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.7")

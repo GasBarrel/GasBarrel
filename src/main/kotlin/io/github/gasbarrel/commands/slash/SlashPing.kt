@@ -1,6 +1,7 @@
 package io.github.gasbarrel.commands.slash
 
 import com.freya02.botcommands.api.annotations.CommandMarker
+import com.freya02.botcommands.api.commands.annotations.Command
 import com.freya02.botcommands.api.commands.application.CommandScope
 import com.freya02.botcommands.api.commands.application.GlobalApplicationCommandManager
 import com.freya02.botcommands.api.commands.application.annotations.AppDeclaration
@@ -8,7 +9,7 @@ import com.freya02.botcommands.api.commands.application.slash.GlobalSlashEvent
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.messages.reply_
 
-@CommandMarker // Shut up IJ
+@Command
 class SlashPing {
     @CommandMarker
     suspend fun onSlashPing(event: GlobalSlashEvent) {
