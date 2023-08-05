@@ -11,6 +11,7 @@ group = "io.github.gasbarrel"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven("https://jitpack.io")
 }
@@ -21,7 +22,7 @@ dependencies {
     implementation("io.github.minndevelopment:jda-ktx:9fc90f616b")
 
     // Application commands
-    implementation("io.github.freya022:BotCommands:3.0.0-alpha.2")
+    implementation("io.github.freya022:BotCommands:d10de6565f")
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.7")
@@ -37,6 +38,9 @@ dependencies {
 
     // Configs
     implementation("com.akuleshov7:ktoml-core:0.5.0")
+
+    // HOCON
+    implementation("com.typesafe:config:1.4.2")
 
     // SQL
     implementation("org.postgresql:postgresql:42.6.0")

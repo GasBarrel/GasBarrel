@@ -2,7 +2,6 @@
 
 package io.github.gasbarrel
 
-import ch.qos.logback.classic.ClassicConstants as LogbackConstants
 import com.freya02.botcommands.api.core.BBuilder
 import dev.minn.jda.ktx.events.CoroutineEventManager
 import dev.reformator.stacktracedecoroutinator.runtime.DecoroutinatorRuntime
@@ -14,6 +13,7 @@ import java.lang.management.ManagementFactory
 import kotlin.io.path.absolutePathString
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.minutes
+import ch.qos.logback.classic.ClassicConstants as LogbackConstants
 
 private val logger by lazy { KotlinLogging.logger {} } // Must not load before system property is set
 
