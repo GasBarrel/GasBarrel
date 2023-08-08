@@ -9,6 +9,7 @@ import io.github.gasbarrel.utils.namedDefaultScope
 import kotlinx.coroutines.cancel
 import mu.KotlinLogging
 import net.dv8tion.jda.api.events.session.ShutdownEvent
+import net.dv8tion.jda.api.interactions.DiscordLocale
 import java.lang.management.ManagementFactory
 import kotlin.io.path.absolutePathString
 import kotlin.system.exitProcess
@@ -58,6 +59,8 @@ fun main(args: Array<out String>) {
 
             applicationCommands {
                 testGuildIds += config.testGuildIds
+
+                addLocalizations("Commands", DiscordLocale.FRENCH)
             }
 
             components {
