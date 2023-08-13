@@ -22,7 +22,7 @@ dependencies {
     implementation("io.github.minndevelopment:jda-ktx:9fc90f616b")
 
     // Application commands
-    implementation("io.github.freya022:BotCommands:d10de6565f")
+    implementation("io.github.freya022:BotCommands:3.0.0-alpha.4")
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.7")
