@@ -2,16 +2,20 @@ package io.github.gasbarrel
 
 import com.freya02.botcommands.api.core.db.ConnectionSupplier
 import com.freya02.botcommands.api.core.service.annotations.BService
+import com.freya02.botcommands.api.core.service.annotations.ServiceType
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import mu.KotlinLogging
 import org.flywaydb.core.Flyway
 import java.sql.Connection
+import javax.sql.DataSource
 import kotlin.time.Duration.Companion.seconds
 
 @BService
 class DatabaseSource(config: Config) : ConnectionSupplier {
-    private val source = HikariDataSource(HikariConfig().apply {
+    @get:BService
+    @get:ServiceType(DataSource::class)
+    val source = HikariDataSource(HikariConfig().apply {
         jdbcUrl = config.database.url
         username = config.database.user
         password = config.database.password
