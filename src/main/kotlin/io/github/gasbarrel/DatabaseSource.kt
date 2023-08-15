@@ -19,6 +19,7 @@ class DatabaseSource(config: Config) : ConnectionSupplier {
         jdbcUrl = config.database.url
         username = config.database.user
         password = config.database.password
+        schema = "gasbarrel"
 
         maximumPoolSize = 2
         leakDetectionThreshold = 10.seconds.inWholeMilliseconds
