@@ -26,7 +26,11 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <root level="trace">
+    <logger name="io.github.gasbarrel" level="trace" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
