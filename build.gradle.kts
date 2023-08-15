@@ -5,6 +5,8 @@ plugins {
     kotlin("plugin.serialization") version "1.9.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     application
+
+    id("com.github.ben-manes.versions") version "0.47.0"
 }
 
 group = "io.github.gasbarrel"
@@ -18,20 +20,20 @@ repositories {
 
 dependencies {
     // JDA
-    implementation("net.dv8tion:JDA:5.0.0-beta.11")
+    implementation("net.dv8tion:JDA:5.0.0-beta.13")
     implementation("io.github.minndevelopment:jda-ktx:9fc90f616b")
 
     // Application commands
-    implementation("io.github.freya022:BotCommands:3.0.0-alpha.4")
+    implementation("io.github.freya022:BotCommands:e3b57ae397")
 
     // Logging
     implementation("org.slf4j:slf4j-api:2.0.7")
-    implementation("ch.qos.logback:logback-classic:1.4.5")
+    implementation("ch.qos.logback:logback-classic:1.4.11")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     // Coroutine debugging
     implementation("dev.reformator.stacktracedecoroutinator:stacktrace-decoroutinator-jvm:2.3.6")
@@ -46,6 +48,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.6.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.flywaydb:flyway-core:9.18.0")
+    implementation("org.flywaydb:flyway-core:9.21.1")
 
     testImplementation(kotlin("test"))
 }
