@@ -7,10 +7,28 @@ plugins {
     application
 
     id("com.github.ben-manes.versions") version "0.47.0"
+
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.9.0"
+    id("org.jetbrains.kotlin.plugin.noarg") version "1.9.0"
 }
 
 group = "io.github.gasbarrel"
 version = "1.0-SNAPSHOT"
+
+allOpen {
+    annotations(
+        "jakarta.persistence.Entity",
+        "jakarta.persistence.Embeddable",
+        "jakarta.persistence.Column"
+    )
+}
+
+noArg {
+    annotations(
+        "jakarta.persistence.Entity",
+        "jakarta.persistence.Embeddable"
+    )
+}
 
 repositories {
     mavenLocal()
@@ -47,8 +65,9 @@ dependencies {
     // SQL
     implementation("org.postgresql:postgresql:42.6.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation("org.flywaydb:flyway-core:9.18.0")
     implementation("org.flywaydb:flyway-core:9.21.1")
+    implementation("org.hibernate.orm:hibernate-core:6.2.7.Final")
+    implementation("org.hibernate.orm:hibernate-hikaricp:6.2.7.Final")
 
     testImplementation(kotlin("test"))
 }
