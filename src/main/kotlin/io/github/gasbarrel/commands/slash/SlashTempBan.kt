@@ -10,6 +10,9 @@ import com.freya02.botcommands.api.components.Components
 import com.freya02.botcommands.api.components.awaitAnyOrNull
 import com.freya02.botcommands.api.components.event.ButtonEvent
 import com.freya02.botcommands.api.core.utils.retrieveMemberOrNull
+import com.freya02.botcommands.api.localization.annotations.LocalizationBundle
+import com.freya02.botcommands.api.localization.context.AppLocalizationContext
+import com.freya02.botcommands.api.localization.context.localize
 import dev.minn.jda.ktx.interactions.components.row
 import io.github.gasbarrel.tempban.TempBanService
 import net.dv8tion.jda.api.Permission
@@ -33,9 +36,12 @@ class SlashTempBan(
     @CommandMarker
     suspend fun onSlashTempBan(
         event: GuildSlashEvent,
+        @LocalizationBundle("Commands", prefix = "tempban.options") options: AppLocalizationContext,
+        @LocalizationBundle("Commands", prefix = "tempban.outputs") outputs: AppLocalizationContext,
+        @LocalizationBundle("Commands", prefix = "tempban.components") components: AppLocalizationContext,
         target: User,
         duration: Duration,
-        reason: String = "No reason supplied" //TODO localization
+        reason: String = options.localize("reason.default")
     ) {
         event.deferReply(true).queue()
 
@@ -46,22 +52,19 @@ class SlashTempBan(
 
         val existingTempBan = tempBanService.getActiveBan(event.guild, target)
         if (existingTempBan != null) {
-            //TODO localization
-            val overrideButton = componentsService.ephemeralButton(ButtonStyle.DANGER, "Override") { oneUse = true }
+            val overrideButton = componentsService.ephemeralButton(ButtonStyle.DANGER, components.localize("override.label")) { oneUse = true }
             val extendButton =
-                componentsService.ephemeralButton(ButtonStyle.SECONDARY, "Extend (discards reason)") { oneUse = true }
-            val abortButton = componentsService.ephemeralButton(ButtonStyle.PRIMARY, "Abort") { oneUse = true }
+                componentsService.ephemeralButton(ButtonStyle.SECONDARY, components.localize("extend.label")) { oneUse = true }
+            val abortButton = componentsService.ephemeralButton(ButtonStyle.PRIMARY, components.localize("abort.label")) { oneUse = true }
             val group = componentsService.newEphemeralGroup(overrideButton, extendButton, abortButton) {
                 timeout(5.minutes)
             }
-            //TODO localization
-            event.hook.editOriginal("This user is already temporarily banned until ${existingTempBan.expiresAt.toExpirationString()}")
+            event.hook.editOriginal(outputs.localize("already_banned", "expiration" to existingTempBan.expiresAt.toExpirationString()))
                 .setComponents(row(overrideButton, extendButton, abortButton))
                 .queue()
 
             val button = group.awaitAnyOrNull<ButtonEvent>()
-            //TODO localization, better response
-                ?: return event.hook.editOriginal("Timeout reached")
+                ?: return event.hook.editOriginal(outputs.localize("timeout"))
                     .setReplace(true)
                     .delay(5.seconds.toJavaDuration())
                     .flatMap { event.hook.deleteOriginal() }
@@ -70,21 +73,18 @@ class SlashTempBan(
             when (button.componentId) {
                 overrideButton.id -> {
                     val expiration = tempBanService.overrideBan(existingTempBan, duration, reason)
-                    //TODO localization, better response
-                    event.hook.editOriginal("Successfully override temp ban, expiring at ${expiration.toExpirationString()}")
+                    event.hook.editOriginal(outputs.localize("overridden", "expiration" to expiration.toExpirationString()))
                         .setReplace(true)
                         .queue()
                 }
 
                 extendButton.id -> {
                     val expiration = tempBanService.extendBan(existingTempBan, duration)
-                    //TODO localization, better response
-                    event.hook.editOriginal("Successfully extended temp ban, expiring at ${expiration.toExpirationString()}")
+                    event.hook.editOriginal(outputs.localize("extended", "expiration" to expiration.toExpirationString()))
                         .setReplace(true)
                         .queue()
                 }
-                //TODO localization, better response
-                abortButton.id -> event.hook.editOriginal("Aborted temp ban")
+                abortButton.id -> event.hook.editOriginal(outputs.localize("aborted"))
                     .setReplace(true)
                     .delay(5.seconds.toJavaDuration())
                     .flatMap { event.hook.deleteOriginal() }
@@ -94,8 +94,7 @@ class SlashTempBan(
             }
         } else {
             val expiration = tempBanService.addBan(event.guild, target, duration, reason)
-            //TODO localization, better response
-            event.hook.editOriginal("Successfully added temp ban, expiring at ${expiration.toExpirationString()}")
+            event.hook.editOriginal(outputs.localize("success", "mention" to target.asMention, "expiration" to expiration.toExpirationString()))
                 .setReplace(true)
                 .queue()
         }
@@ -106,31 +105,25 @@ class SlashTempBan(
 
     @AppDeclaration
     fun declare(manager: GlobalApplicationCommandManager) {
-        //TODO localization
         manager.slashCommand("tempban", function = ::onSlashTempBan) {
-            description = "Bans an user temporarily"
-
             botPermissions += Permission.BAN_MEMBERS
             userPermissions += Permission.BAN_MEMBERS
 
-            option("target") {
-                description = "The user to ban temporarily"
-            }
+            customOption("options")
+            customOption("outputs")
+            customOption("components")
+
+            option("target")
 
             aggregate("duration", ::durationAggregator) {
-                option("duration") {
-                    description = "The duration of the temp ban"
-                }
+                option("duration")
 
                 option("durationUnit") {
-                    description = "The unit of the temp ban duration"
                     usePredefinedChoices = true
                 }
             }
 
-            option("reason") {
-                description = "The reason of the temp ban"
-            }
+            option("reason")
         }
     }
 
