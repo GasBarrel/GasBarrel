@@ -28,23 +28,23 @@ class TempBanService(private val tempBanRepository: TempBanRepository) {
         return expiration
     }
 
-    fun overrideBan(tempBan: TempBan, duration: Duration, reason: String): Instant {
+    fun overrideBan(tempBan: TempBan, duration: Duration, reason: String): TempBan {
         val expiration = computeExpiration(duration)
         tempBan.expiresAt = expiration
         tempBan.reason = reason
 
         tempBanRepository.update(tempBan)
 
-        return expiration
+        return tempBan
     }
 
-    fun extendBan(tempBan: TempBan, duration: Duration): Instant {
+    fun extendBan(tempBan: TempBan, duration: Duration): TempBan {
         val expiration = tempBan.expiresAt + duration.toJavaDuration()
         tempBan.expiresAt = expiration
 
         tempBanRepository.update(tempBan)
 
-        return expiration
+        return tempBan
     }
 
     private fun computeExpiration(duration: Duration): Instant {

@@ -77,19 +77,18 @@ class SlashTempBan(
                     .queue()
             }
 
-            //TODO service methods should return an updated TempBan object that we can rely on
             when (decision) {
                 Decision.OVERRIDE -> {
-                    val expiration = tempBanService.overrideBan(existingTempBan, duration, reason)
+                    val tempBan = tempBanService.overrideBan(existingTempBan, duration, reason)
                     event.hook
-                        .replaceWith(createMessage(embedParts, "titles.overridden", target, expiration, reason))
+                        .replaceWith(createMessage(embedParts, "titles.overridden", target, tempBan.expiresAt, tempBan.reason))
                         .queue()
                 }
 
                 Decision.EXTEND -> {
-                    val expiration = tempBanService.extendBan(existingTempBan, duration)
+                    val tempBan = tempBanService.extendBan(existingTempBan, duration)
                     event.hook
-                        .replaceWith(createMessage(embedParts, "titles.extended", target, expiration, existingTempBan.reason))
+                        .replaceWith(createMessage(embedParts, "titles.extended", target, tempBan.expiresAt, tempBan.reason))
                         .queue()
                 }
 
