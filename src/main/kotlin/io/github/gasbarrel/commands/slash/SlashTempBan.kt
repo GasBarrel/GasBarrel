@@ -9,23 +9,27 @@ import com.freya02.botcommands.api.commands.application.slash.GuildSlashEvent
 import com.freya02.botcommands.api.components.Components
 import com.freya02.botcommands.api.components.awaitAnyOrNull
 import com.freya02.botcommands.api.components.event.ButtonEvent
+import com.freya02.botcommands.api.core.utils.delay
+import com.freya02.botcommands.api.core.utils.replaceWith
 import com.freya02.botcommands.api.core.utils.retrieveMemberOrNull
 import com.freya02.botcommands.api.localization.annotations.LocalizationBundle
 import com.freya02.botcommands.api.localization.context.AppLocalizationContext
 import com.freya02.botcommands.api.localization.context.localize
 import dev.minn.jda.ktx.interactions.components.row
+import dev.minn.jda.ktx.messages.MessageCreate
 import io.github.gasbarrel.tempban.TempBanService
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.UserSnowflake
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.utils.TimeFormat
+import java.awt.Color
 import java.time.Instant
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
-import kotlin.time.toJavaDuration
 
 @Command
 class SlashTempBan(
@@ -33,11 +37,18 @@ class SlashTempBan(
     private val componentsService: Components
 ) : ApplicationCommand() {
 
+    private val banGifs = listOf(
+        "https://media.tenor.com/N_8SL-Rl-6EAAAAC/survival-game-club-anime.gif",
+        "https://media.tenor.com/dpeTg8S0ogYAAAAC/gun-die.gif",
+        "https://media.tenor.com/C_h9TiM0AMUAAAAC/anime-girl.gif"
+    )
+
     @CommandMarker
     suspend fun onSlashTempBan(
         event: GuildSlashEvent,
         @LocalizationBundle("Commands", prefix = "tempban.options") options: AppLocalizationContext,
         @LocalizationBundle("Commands", prefix = "tempban.outputs") outputs: AppLocalizationContext,
+        @LocalizationBundle("Commands", prefix = "tempban.embed_parts") embedParts: AppLocalizationContext,
         @LocalizationBundle("Commands", prefix = "tempban.components") components: AppLocalizationContext,
         target: User,
         duration: Duration,
@@ -64,29 +75,31 @@ class SlashTempBan(
                 .queue()
 
             val button = group.awaitAnyOrNull<ButtonEvent>()
-                ?: return event.hook.editOriginal(outputs.localize("timeout"))
-                    .setReplace(true)
-                    .delay(5.seconds.toJavaDuration())
+                ?: return event.hook
+                    .replaceWith(outputs.localize("timeout"))
+                    .delay(5.seconds)
                     .flatMap { event.hook.deleteOriginal() }
                     .queue()
 
+            //TODO handle case where the ban ended while waiting
+            //TODO service methods should return an updated TempBan object that we can rely on
             when (button.componentId) {
                 overrideButton.id -> {
                     val expiration = tempBanService.overrideBan(existingTempBan, duration, reason)
-                    event.hook.editOriginal(outputs.localize("overridden", "expiration" to expiration.toExpirationString()))
-                        .setReplace(true)
+                    event.hook
+                        .replaceWith(createMessage(embedParts, "titles.overridden", target, expiration, reason))
                         .queue()
                 }
 
                 extendButton.id -> {
                     val expiration = tempBanService.extendBan(existingTempBan, duration)
-                    event.hook.editOriginal(outputs.localize("extended", "expiration" to expiration.toExpirationString()))
-                        .setReplace(true)
+                    event.hook
+                        .replaceWith(createMessage(embedParts, "titles.extended", target, expiration, existingTempBan.reason))
                         .queue()
                 }
-                abortButton.id -> event.hook.editOriginal(outputs.localize("aborted"))
-                    .setReplace(true)
-                    .delay(5.seconds.toJavaDuration())
+                abortButton.id -> event.hook
+                    .replaceWith(outputs.localize("aborted"))
+                    .delay(5.seconds)
                     .flatMap { event.hook.deleteOriginal() }
                     .queue()
 
@@ -94,9 +107,44 @@ class SlashTempBan(
             }
         } else {
             val expiration = tempBanService.addBan(event.guild, target, duration, reason)
-            event.hook.editOriginal(outputs.localize("success", "mention" to target.asMention, "expiration" to expiration.toExpirationString()))
-                .setReplace(true)
+            event.hook
+                .replaceWith(createMessage(embedParts, "titles.success", target, expiration, reason))
                 .queue()
+        }
+    }
+
+    //TODO publish to mod channel
+
+    private fun createMessage(
+        embedParts: AppLocalizationContext,
+        titleKey: String,
+        target: UserSnowflake,
+        expiration: Instant,
+        reason: String
+    ) = MessageCreate {
+        embed {
+            title = embedParts.localize(titleKey)
+
+            color = Color.RED.rgb
+
+            field {
+                name = embedParts.localize("field.member.name")
+                value = target.asMention
+                inline = true
+            }
+
+            field {
+                name = embedParts.localize("field.expires.name")
+                value = expiration.toExpirationString()
+                inline = true
+            }
+
+            field {
+                name = embedParts.localize("field.reason.name")
+                value = reason
+            }
+
+            image = banGifs.random()
         }
     }
 
@@ -111,6 +159,7 @@ class SlashTempBan(
 
             customOption("options")
             customOption("outputs")
+            customOption("embedParts")
             customOption("components")
 
             option("target")
