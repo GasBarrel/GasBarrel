@@ -17,6 +17,7 @@ import com.freya02.botcommands.api.localization.context.AppLocalizationContext
 import com.freya02.botcommands.api.localization.context.localize
 import dev.minn.jda.ktx.interactions.components.row
 import dev.minn.jda.ktx.messages.MessageCreate
+import io.github.gasbarrel.entities.TempBan
 import io.github.gasbarrel.tempban.TempBanService
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.User
@@ -26,7 +27,6 @@ import net.dv8tion.jda.api.utils.TimeFormat
 import java.awt.Color
 import java.time.Instant
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -36,6 +36,10 @@ class SlashTempBan(
     private val tempBanService: TempBanService,
     private val componentsService: Components
 ) : ApplicationCommand() {
+
+    private enum class Decision {
+        OVERRIDE, EXTEND, ABORT
+    }
 
     private val banGifs = listOf(
         "https://media.tenor.com/N_8SL-Rl-6EAAAAC/survival-game-club-anime.gif",
@@ -63,53 +67,62 @@ class SlashTempBan(
 
         val existingTempBan = tempBanService.getActiveBan(event.guild, target)
         if (existingTempBan != null) {
-            val overrideButton = componentsService.ephemeralButton(ButtonStyle.DANGER, components.localize("override.label")) { oneUse = true }
-            val extendButton =
-                componentsService.ephemeralButton(ButtonStyle.SECONDARY, components.localize("extend.label")) { oneUse = true }
-            val abortButton = componentsService.ephemeralButton(ButtonStyle.PRIMARY, components.localize("abort.label")) { oneUse = true }
-            val group = componentsService.newEphemeralGroup(overrideButton, extendButton, abortButton) {
-                timeout(5.minutes)
-            }
-            event.hook.editOriginal(outputs.localize("already_banned", "expiration" to existingTempBan.expiresAt.toExpirationString()))
-                .setComponents(row(overrideButton, extendButton, abortButton))
-                .queue()
-
-            val button = group.awaitAnyOrNull<ButtonEvent>()
-                ?: return event.hook
-                    .replaceWith(outputs.localize("timeout"))
-                    .delay(5.seconds)
-                    .flatMap { event.hook.deleteOriginal() }
-                    .queue()
+            val decision = awaitUserDecision(event, components, outputs, existingTempBan)
 
             //TODO handle case where the ban ended while waiting
             //TODO service methods should return an updated TempBan object that we can rely on
-            when (button.componentId) {
-                overrideButton.id -> {
+            when (decision) {
+                Decision.OVERRIDE -> {
                     val expiration = tempBanService.overrideBan(existingTempBan, duration, reason)
                     event.hook
                         .replaceWith(createMessage(embedParts, "titles.overridden", target, expiration, reason))
                         .queue()
                 }
 
-                extendButton.id -> {
+                Decision.EXTEND -> {
                     val expiration = tempBanService.extendBan(existingTempBan, duration)
                     event.hook
                         .replaceWith(createMessage(embedParts, "titles.extended", target, expiration, existingTempBan.reason))
                         .queue()
                 }
-                abortButton.id -> event.hook
+
+                Decision.ABORT -> event.hook
                     .replaceWith(outputs.localize("aborted"))
                     .delay(5.seconds)
                     .flatMap { event.hook.deleteOriginal() }
                     .queue()
-
-                else -> throw IllegalArgumentException("Could not match button with ID ${button.componentId}")
             }
         } else {
             val expiration = tempBanService.addBan(event.guild, target, duration, reason)
             event.hook
                 .replaceWith(createMessage(embedParts, "titles.success", target, expiration, reason))
                 .queue()
+        }
+    }
+
+    private suspend fun awaitUserDecision(
+        event: GuildSlashEvent,
+        components: AppLocalizationContext,
+        outputs: AppLocalizationContext,
+        existingTempBan: TempBan
+    ): Decision {
+        val overrideButton = componentsService.ephemeralButton(ButtonStyle.DANGER, components.localize("override.label")) { oneUse = true }
+        val extendButton =
+            componentsService.ephemeralButton(ButtonStyle.SECONDARY, components.localize("extend.label")) { oneUse = true }
+        val abortButton = componentsService.ephemeralButton(ButtonStyle.PRIMARY, components.localize("abort.label")) { oneUse = true }
+        val group = componentsService.newEphemeralGroup(overrideButton, extendButton, abortButton) {
+            timeout(5.seconds)
+        }
+        event.hook.editOriginal(outputs.localize("already_banned", "expiration" to existingTempBan.expiresAt.toExpirationString()))
+            .setComponents(row(overrideButton, extendButton, abortButton))
+            .queue()
+
+        val button = group.awaitAnyOrNull<ButtonEvent>() ?: return Decision.ABORT
+        return when (button.componentId) {
+            overrideButton.id -> Decision.OVERRIDE
+            extendButton.id -> Decision.EXTEND
+            abortButton.id -> Decision.ABORT
+            else -> throw IllegalArgumentException("Could not match button with ID ${button.componentId}")
         }
     }
 
