@@ -68,8 +68,14 @@ class SlashTempBan(
         val existingTempBan = tempBanService.getActiveBan(event.guild, target)
         if (existingTempBan != null) {
             val decision = awaitUserDecision(event, components, outputs, existingTempBan)
+            if (tempBanService.getActiveBan(event.guild, target)?.id != existingTempBan.id ) {
+                return event.hook
+                    .replaceWith(outputs.localize("expired"))
+                    .delay(10.seconds)
+                    .flatMap { event.hook.deleteOriginal() }
+                    .queue()
+            }
 
-            //TODO handle case where the ban ended while waiting
             //TODO service methods should return an updated TempBan object that we can rely on
             when (decision) {
                 Decision.OVERRIDE -> {
