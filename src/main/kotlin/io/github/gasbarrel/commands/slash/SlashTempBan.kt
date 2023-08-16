@@ -27,6 +27,7 @@ import net.dv8tion.jda.api.utils.TimeFormat
 import java.awt.Color
 import java.time.Instant
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -117,7 +118,7 @@ class SlashTempBan(
             componentsService.ephemeralButton(ButtonStyle.SECONDARY, components.localize("extend.label")) { oneUse = true }
         val abortButton = componentsService.ephemeralButton(ButtonStyle.PRIMARY, components.localize("abort.label")) { oneUse = true }
         val group = componentsService.newEphemeralGroup(overrideButton, extendButton, abortButton) {
-            timeout(5.seconds)
+            timeout(5.minutes)
         }
         event.hook.editOriginal(outputs.localize("already_banned", "expiration" to existingTempBan.expiresAt.toExpirationString()))
             .setComponents(row(overrideButton, extendButton, abortButton))
