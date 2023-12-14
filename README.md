@@ -2,10 +2,11 @@
 
 # Gas Barrel
 
-Our bot is unique in that it incorporates blockchain technology
-to enable a write-once and read-only, decentralized, and clustered
-database. We are proud to offer this innovative solution to our
-users, providing them with the security and reliability they deserve.
+The bot that will replace all bots, no more NFT scams and no paywalled basic features.
+
+## Archive status
+
+This project is archived due to the lack of time for contributions.
 
 ## License
 
